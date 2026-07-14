@@ -1,18 +1,32 @@
-name: My First Workflow
+name: Run k6 Performance Test
 
 on:
   workflow_dispatch:
   push:
 
 jobs:
-  hello:
+  performance-test:
 
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
-        
-      - name: Say Hello
-        run: echo "Hello Hari! My first GitHub Action."
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo apt-get update
+          sudo apt-get install -y gnupg software-properties-common
+          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+
+      - name: Verify k6 Installation
+        run: k6 version
+
+      - name: Run Performance Test
+        run: |
+          k6 run k6-scripts/test.js
