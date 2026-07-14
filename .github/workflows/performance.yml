@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
+      - name: Checkout Repository
+      
+        
       - name: Say Hello
         run: echo "Hello Hari! My first GitHub Action."
